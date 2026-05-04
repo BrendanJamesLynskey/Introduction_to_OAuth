@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to OAuth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+<style>
+  :root {
+    --amber:  #f5a623;
+    --green:  #4ecb8d;
+    --purple: #a78bfa;
+    --blue:   #60a5fa;
+    --red:    #f87171;
+    --bg:     #0a0a0f;
+    --bg2:    #10101a;
+    --bg3:    #181824;
+    --border: #2a2a3a;
+    --text:   #e8e8f0;
+    --muted:  #8888a8;
+  }
+
+  .reveal-viewport { background: var(--bg); }
+  .reveal .slides section { background: transparent; }
+
+  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
+  .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
+  .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
+  .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
+  .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
+  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
+                 border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+
+  .slide-hdr {
+    display: flex; align-items: center; gap: .4em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .2em; margin-bottom: .3em;
+  }
+  .slide-hdr .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .42em; font-weight: 500;
+    color: var(--bg); background: var(--amber);
+    padding: .1em .4em; border-radius: 3px;
+    letter-spacing: .04em;
+  }
+  .slide-hdr h2 { margin: 0; font-size: .95em; }
+
+  .cols   { display: grid; gap: .5em; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-6040 { grid-template-columns: 6fr 4fr; }
+  .cols-4060 { grid-template-columns: 4fr 6fr; }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 6px; padding: .35em .6em;
+  }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.purple{ border-left: 3px solid var(--purple); }
+  .card.blue  { border-left: 3px solid var(--blue); }
+  .card.red   { border-left: 3px solid var(--red); }
+  .card h3 { font-size: .64em; margin: 0 0 .12em; }
+  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card ul { margin: 0; padding-left: 1em; }
+  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+
+  .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
+  .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
+                     padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
+  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+
+  .a  { color: var(--amber); font-weight: 600; }
+  .g  { color: var(--green); font-weight: 600; }
+  .p  { color: var(--purple); font-weight: 600; }
+  .b  { color: var(--blue); font-weight: 600; }
+  .r  { color: var(--red); font-weight: 600; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  svg.diagram { display: block; margin: 0 auto; overflow: visible; }
+
+  .pill {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: .44em; padding: .08em .4em; border-radius: 99px;
+    border: 1px solid; margin: 0 .08em;
+  }
+  .pill.amber { color: var(--amber); border-color: var(--amber); }
+  .pill.green { color: var(--green); border-color: var(--green); }
+  .pill.purple{ color: var(--purple); border-color: var(--purple); }
+  .pill.blue  { color: var(--blue); border-color: var(--blue); }
+
+  .reveal .slide-footer { display: none; }
+  .title-slide h1 { font-size: 1.8em; }
+  .title-slide .subtitle {
+    font-size: .7em; color: var(--green); font-family: 'DM Sans', sans-serif;
+    font-weight: 300; letter-spacing: .04em; margin: .3em 0 .6em;
+  }
+  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .ss-row {
+    display: flex; gap: .25em; align-items: center;
+    margin: .1em 0; font-size: .55em; font-family: 'JetBrains Mono', monospace;
+  }
+  .ss-node {
+    padding: .2em .55em; border-radius: 5px; font-size: .9em;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+  }
+  .ss-node.active { background: #1a2a1a; border-color: var(--green); color: var(--green); }
+  .ss-node.done   { background: #1a1a2a; border-color: var(--purple); color: var(--purple); }
+  .ss-arrow { color: var(--amber); }
+  .ss-label { font-size: .8em; color: var(--muted); margin-left: .3em; }
+
+  .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
+.reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+
+<!-- ═══════════════════════════════ SLIDE 01 — TITLE ═══════════════════════════════ -->
+<section class="title-slide" data-background-color="#0a0a0f">
+  <div style="text-align:left; max-width:820px; margin:0 auto; padding: 1em 0;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
+      TECHNICAL PRESENTATION &middot; PART 1 OF 2
+    </div>
+    <h1>Introduction to<br>OAuth</h1>
+    <div class="subtitle">The delegated-authorisation framework that runs the modern web</div>
+    <div style="width:60px; height:3px; background:var(--amber); margin-bottom:1.4em;"></div>
+    <div style="display:flex; gap:1.2em; flex-wrap:wrap; margin-bottom:1em;">
+      <span class="pill amber">RFC 6749</span>
+      <span class="pill green">PKCE</span>
+      <span class="pill purple">OIDC</span>
+      <span class="pill blue">OAuth 2.1</span>
+    </div>
+    <div class="ss-row" style="margin-top:0.6em;">
+      <span class="ss-node active">👤 User</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node active">📱 Client</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node active">🔐 Auth Server</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node done">🎫 Token</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node done">🗄 Resource</span>
+    </div>
+    <p style="max-width:620px; color:#a0a0c0; font-size:.56em; line-height:1.5; margin-top:1em;">
+      Purpose &middot; History &middot; OAuth 1.0 → 2.0 → 2.1 &middot; flows, tokens, scopes, PKCE, OIDC. Companion deck covers MCP &amp; provider landscape.
+    </p>
+    <div class="meta" style="margin-top:1.4em;">
+      Delegate &nbsp;·&nbsp; Authorise &nbsp;·&nbsp; Issue &nbsp;·&nbsp; Verify
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 02 — TOPICS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">01</span>
+    <h2>Topics</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Foundations</h3>
+        <ul>
+          <li>The problem OAuth solves — and what came before</li>
+          <li>OAuth 1.0a — signatures, nonces, three-legged dance</li>
+          <li>OAuth 2.0 — RFC 6749, the framework reset</li>
+          <li>Roles, tokens, endpoints, terminology</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.5em;">
+        <h3 class="g">Flows</h3>
+        <ul>
+          <li>Authorization Code (the only one you should use)</li>
+          <li>PKCE — RFC 7636, mandatory in 2.1</li>
+          <li>Client Credentials &amp; Device Code grants</li>
+          <li>Implicit &amp; Password grants — and why they're dead</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Tokens &amp; identity</h3>
+        <ul>
+          <li>Access, refresh, ID tokens — three different jobs</li>
+          <li>Scopes, audience, resource indicators</li>
+          <li>Bearer vs DPoP vs mTLS sender-constrained</li>
+          <li>OpenID Connect — the identity layer on top</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.5em;">
+        <h3 class="b">Modern &amp; security</h3>
+        <ul>
+          <li>OAuth 2.1 — what's in, what's out</li>
+          <li>Common attacks: redirect, CSRF, mix-up, theft</li>
+          <li>OAuth vs SAML vs API keys vs WebAuthn</li>
+          <li>Choosing a flow &amp; pointer to Part 2 (MCP &amp; providers)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 03 — WHY OAUTH ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">02</span>
+    <h2>Why OAuth Exists — The Purpose</h2>
+  </div>
+  <p>OAuth solves one specific problem: <span class="a">letting an application act on a user's behalf at a third-party service, without the user handing over their password</span>. It is an <span class="g">authorisation</span> framework — not, by itself, an authentication protocol.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card red">
+        <h3 class="r">The "password anti-pattern" it killed</h3>
+        <ul>
+          <li>2006: a printing app wants your Flickr photos. You paste your Flickr password into it.</li>
+          <li>The app now has full account access — forever — and there is no way to revoke just <em>that</em> app.</li>
+          <li>Users were trained to type credentials into anything that asked. Phishing was indistinguishable from legitimate use.</li>
+          <li>Password resets at one site cascaded across every integration.</li>
+        </ul>
+      </div>
+      <div class="card amber" style="margin-top:0.4em;">
+        <h3 class="a">What OAuth actually delegates</h3>
+        <ul>
+          <li><span class="g">Scoped</span> access — "read photos", not "everything"</li>
+          <li><span class="g">Time-bounded</span> — short-lived access tokens</li>
+          <li><span class="g">Revocable per-app</span> — without rotating your password</li>
+          <li><span class="g">Auditable</span> — the AS knows which client did what</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Three things OAuth is <em>not</em></h3>
+        <ul>
+          <li><span class="r">Not authentication</span> — it doesn't tell you "who" the user is. (OIDC adds that on top.)</li>
+          <li><span class="r">Not encryption</span> — TLS does that. OAuth assumes channels are already secure.</li>
+          <li><span class="r">Not a single protocol</span> — it's a framework of grant types you assemble.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">One sentence</h3>
+        <p>"<em>Application <span class="a">A</span> wants to access resource <span class="g">R</span> belonging to user <span class="p">U</span>, hosted at server <span class="b">S</span>, without ever seeing <span class="p">U</span>'s password.</em>"</p>
+        <p style="margin-top:.3em;">Every grant type, token format, and security mechanism in OAuth exists to safely accomplish that one sentence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 04 — HISTORY ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">03</span>
+    <h2>A Brief History</h2>
+  </div>
+
+  <svg class="diagram" viewBox="0 0 980 220" width="900" height="220">
+    <!-- timeline -->
+    <line x1="40" y1="110" x2="940" y2="110" stroke="#2a2a3a" stroke-width="2"/>
+    <!-- dots -->
+    <circle cx="80"  cy="110" r="6" fill="#f87171"/>
+    <circle cx="220" cy="110" r="6" fill="#f5a623"/>
+    <circle cx="360" cy="110" r="6" fill="#f5a623"/>
+    <circle cx="500" cy="110" r="6" fill="#4ecb8d"/>
+    <circle cx="640" cy="110" r="6" fill="#a78bfa"/>
+    <circle cx="780" cy="110" r="6" fill="#60a5fa"/>
+    <circle cx="900" cy="110" r="6" fill="#60a5fa"/>
+    <!-- labels above -->
+    <text x="80"  y="55" text-anchor="middle" fill="#f87171" font-family="Playfair Display,serif" font-size="13" font-weight="700">2006</text>
+    <text x="220" y="55" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">2007</text>
+    <text x="360" y="55" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">2010</text>
+    <text x="500" y="55" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">2012</text>
+    <text x="640" y="55" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">2014</text>
+    <text x="780" y="55" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">2020</text>
+    <text x="900" y="55" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">2024+</text>
+    <!-- labels below -->
+    <text x="80"  y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">Twitter</text>
+    <text x="80"  y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">delegation</text>
+    <text x="80"  y="170" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="9">problem</text>
+    <text x="220" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">OAuth 1.0</text>
+    <text x="220" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">draft</text>
+    <text x="360" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">OAuth 1.0a</text>
+    <text x="360" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">RFC 5849</text>
+    <text x="500" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">OAuth 2.0</text>
+    <text x="500" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">RFC 6749</text>
+    <text x="640" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">OpenID</text>
+    <text x="640" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">Connect 1.0</text>
+    <text x="780" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">2.1 draft +</text>
+    <text x="780" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">Sec BCP 240</text>
+    <text x="900" y="140" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">DPoP, RAR,</text>
+    <text x="900" y="155" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">MCP profile</text>
+    <text x="490" y="205" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">Eighteen years from "the password anti-pattern" to a sender-constrained, audience-bound, PKCE-mandatory OAuth 2.1.</text>
+  </svg>
+
+  <div class="cols cols-2" style="margin-top:0.3em;">
+    <div class="card amber">
+      <h3 class="a">The triggers (2006–2007)</h3>
+      <ul>
+        <li>Blaine Cook (Twitter) needed delegation for OpenID-based Twitter signups.</li>
+        <li>Joined by Chris Messina, Larry Halff, David Recordon &amp; the Ma.gnolia / Pownce crowd.</li>
+        <li>OAuth 1.0 published Dec 2007, refined to 1.0a in 2009 after a session-fixation flaw.</li>
+        <li>Standardised by IETF as <span class="a">RFC 5849</span> in April 2010.</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3 class="g">The 2.0 reset and beyond</h3>
+      <ul>
+        <li>2010: Eran Hammer chairs OAuth WG, drives a new charter — bearer tokens, no signatures, separate flows for native &amp; web clients.</li>
+        <li>2012: <span class="g">RFC 6749</span> + <span class="g">RFC 6750</span> ship. Hammer publicly resigns over its complexity.</li>
+        <li>2014: OpenID Connect 1.0 finalised — identity layer on top of OAuth 2.0.</li>
+        <li>2020+: BCP 240 (Security Best Current Practice) + OAuth 2.1 draft consolidate ten years of lessons.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 05 — OAUTH 1.0a ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">04</span>
+    <h2>OAuth 1.0a — Signatures &amp; the Three-Legged Dance</h2>
+  </div>
+  <p>OAuth 1.0a was a <span class="a">single, self-contained protocol</span>. Every request was signed with HMAC-SHA1 (or RSA-SHA1) using a per-client consumer secret plus a per-user token secret. No TLS required — the signature protected the request itself.</p>
+
+  <div class="cols cols-6040" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The three legs</h3>
+        <ol style="padding-left:1.2em;">
+          <li><span class="g">Request token</span> — client → service, gets a temporary token.</li>
+          <li><span class="g">User authorisation</span> — user redirected to service, approves, gets a verifier code.</li>
+          <li><span class="g">Access token exchange</span> — client swaps request token + verifier for a long-lived access token + secret.</li>
+        </ol>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Why it was abandoned</h3>
+        <ul>
+          <li>Signing every request was hard to get right — string normalisation, percent-encoding edge cases.</li>
+          <li>Painful in mobile apps and JavaScript clients (no easy crypto).</li>
+          <li>Tokens were long-lived bearer-equivalents anyway, once stolen.</li>
+          <li>Each language had a slightly broken library.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">A signed request</h3>
+<pre><code>GET /api/photos HTTP/1.1
+Host: api.example.com
+Authorization: OAuth
+  oauth_consumer_key="abc123",
+  oauth_token="xyz789",
+  oauth_signature_method="HMAC-SHA1",
+  oauth_timestamp="1700000000",
+  oauth_nonce="r4nd0m",
+  oauth_version="1.0",
+  oauth_signature="kxQ8...%3D"</code></pre>
+        <p style="margin-top:.3em;">The signature covers method + URL + every parameter. Replay protection comes from the timestamp + nonce.</p>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Where you'll still see it</h3>
+        <p>X / Twitter API v1.1, some legacy enterprise APIs, and Magento. Everything new uses OAuth 2.0.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 06 — OAUTH 2.0 ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">05</span>
+    <h2>OAuth 2.0 — The Framework Reset</h2>
+  </div>
+  <p>OAuth 2.0 (<span class="a">RFC 6749</span>, October 2012) is deliberately a <span class="g">framework, not a protocol</span>. It defines roles, endpoints, and a small set of grant types — the rest is filled in by companion RFCs and profiles.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Big design changes vs 1.0a</h3>
+        <ul>
+          <li><span class="g">No request signing</span> — bearer tokens over HTTPS instead.</li>
+          <li><span class="g">Multiple grant types</span> for different client environments (web, native, M2M, devices without browsers).</li>
+          <li><span class="g">Short-lived access tokens</span> + long-lived refresh tokens — limits damage of theft.</li>
+          <li><span class="g">JSON</span> everywhere — no XML or form-encoded signatures.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Famous criticism</h3>
+        <p><em>"OAuth 2.0 is bad, complicated, and fundamentally insecure."</em> — <span class="a">Eran Hammer</span>, <em>"OAuth 2.0 and the Road to Hell"</em>, July 2012. He stepped down as lead author and removed his name from the spec.</p>
+        <p style="margin-top:.3em;">His point: by removing signatures and shipping an extensible framework, the WG pushed security decisions onto every implementer — and most got them wrong.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">The four canonical grant types</h3>
+        <table>
+          <thead><tr><th>Grant</th><th>For</th><th>Status today</th></tr></thead>
+          <tbody>
+            <tr><td>Authorization Code</td><td>Server &amp; native apps with a user</td><td><span class="g">Recommended</span></td></tr>
+            <tr><td>Implicit</td><td>JS in the browser, pre-PKCE</td><td><span class="r">Removed in 2.1</span></td></tr>
+            <tr><td>Resource Owner Password</td><td>First-party "trusted" apps</td><td><span class="r">Removed in 2.1</span></td></tr>
+            <tr><td>Client Credentials</td><td>Machine-to-machine (no user)</td><td><span class="g">Recommended</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Plus, added later as separate RFCs</h3>
+        <ul>
+          <li><span class="a">RFC 7636</span> PKCE &middot; <span class="a">RFC 8628</span> Device Authorization &middot; <span class="a">RFC 8414</span> AS Metadata</li>
+          <li><span class="a">RFC 7591</span> Dynamic Client Registration &middot; <span class="a">RFC 8707</span> Resource Indicators</li>
+          <li><span class="a">RFC 9449</span> DPoP &middot; <span class="a">RFC 9396</span> Rich Authorization Requests</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 07 — ROLES ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">06</span>
+    <h2>Roles &amp; Terminology</h2>
+  </div>
+
+  <svg class="diagram" viewBox="0 0 920 200" width="860" height="200">
+    <rect x="20"  y="60" width="180" height="80" rx="8" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="110" y="95" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="14" font-weight="700">Resource Owner</text>
+    <text x="110" y="115" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="10">(the user)</text>
+
+    <rect x="250" y="60" width="180" height="80" rx="8" fill="#1a1a2a" stroke="#f5a623" stroke-width="1.5"/>
+    <text x="340" y="95" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="14" font-weight="700">Client</text>
+    <text x="340" y="115" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="10">(the app)</text>
+
+    <rect x="480" y="60" width="180" height="80" rx="8" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="570" y="95" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="14" font-weight="700">Authorization</text>
+    <text x="570" y="112" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="14" font-weight="700">Server (AS)</text>
+    <text x="570" y="130" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">issues tokens</text>
+
+    <rect x="710" y="60" width="180" height="80" rx="8" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
+    <text x="800" y="95" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="14" font-weight="700">Resource</text>
+    <text x="800" y="112" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="14" font-weight="700">Server (RS)</text>
+    <text x="800" y="130" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">verifies tokens</text>
+
+    <line x1="200" y1="100" x2="250" y2="100" stroke="#888" stroke-width="1.2"/>
+    <line x1="430" y1="100" x2="480" y2="100" stroke="#888" stroke-width="1.2"/>
+    <line x1="660" y1="100" x2="710" y2="100" stroke="#888" stroke-width="1.2"/>
+
+    <text x="455" y="180" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">AS &amp; RS may be the same product (Google) or completely separate services (your API + Auth0).</text>
+  </svg>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Endpoints on the AS</h3>
+        <ul>
+          <li><code>/authorize</code> — user-facing, where consent happens</li>
+          <li><code>/token</code> — back-channel, exchanges codes/refresh for access tokens</li>
+          <li><code>/jwks</code> — public keys to verify signed tokens</li>
+          <li><code>/.well-known/oauth-authorization-server</code> — RFC 8414 metadata</li>
+          <li><code>/revoke</code>, <code>/introspect</code>, <code>/userinfo</code> (OIDC)</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Client types</h3>
+        <ul>
+          <li><span class="a">Confidential</span> — can keep a secret (server-side web app, backend service).</li>
+          <li><span class="a">Public</span> — cannot (SPA, mobile, CLI, desktop). Uses PKCE instead of a client secret.</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Other terms you'll see</h3>
+        <p><span class="a">Scope</span> — string identifying a permission. <span class="a">Audience</span> — which RS the token is for (RFC 8707). <span class="a">Claims</span> — assertions inside a token. <span class="a">Consent screen</span> — the AS UI users see.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 08 — TOKENS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">07</span>
+    <h2>Tokens — Three Different Jobs</h2>
+  </div>
+
+  <table style="margin-bottom:.4em;">
+    <thead><tr><th>Token</th><th>What it represents</th><th>Lifetime</th><th>Sent to</th><th>Format</th></tr></thead>
+    <tbody>
+      <tr><td><span class="a">Access token</span></td><td>Permission to call the resource server</td><td>5 min – 1 hour</td><td>Resource Server</td><td>Opaque or JWT</td></tr>
+      <tr><td><span class="g">Refresh token</span></td><td>Permission to mint new access tokens</td><td>Hours – months</td><td>Authorization Server only</td><td>Opaque (always)</td></tr>
+      <tr><td><span class="p">ID token</span></td><td>Statement about the user (OIDC)</td><td>5–15 min</td><td>Stays with the client</td><td>Signed JWT (always)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Bearer tokens (RFC 6750)</h3>
+<pre><code>GET /api/me HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJSUzI1NiI...</code></pre>
+        <p style="margin-top:.3em;">"Bearer" = whoever holds it can use it. <span class="r">Steal the token → impersonate the user</span> until it expires.</p>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">JWT vs opaque</h3>
+        <ul>
+          <li><span class="a">Opaque</span> — random string. Resource server must call <code>/introspect</code> on the AS to validate.</li>
+          <li><span class="a">JWT</span> — self-contained, signed. RS verifies offline using the AS's JWKS public keys.</li>
+          <li>JWT scales better but is harder to revoke before expiry.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Sender-constrained tokens — beyond bearer</h3>
+        <ul>
+          <li><span class="a">DPoP</span> (RFC 9449) — client proves possession of a key on every request. Token + JWS proof.</li>
+          <li><span class="a">mTLS</span> (RFC 8705) — token bound to the client TLS certificate.</li>
+          <li>Either one defeats stolen-token replay. Required by FAPI 2.0; recommended for high-value APIs and remote MCP servers.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Refresh token rotation</h3>
+        <p>Each <code>/token</code> call with <code>grant_type=refresh_token</code> issues a <em>new</em> refresh token and invalidates the old one. If two clients ever present the same refresh token, the AS treats it as theft and revokes the whole chain. Mandatory for public clients in 2.1.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 09 — AUTH CODE FLOW ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">08</span>
+    <h2>Authorization Code Flow</h2>
+  </div>
+  <p>The default OAuth flow for <em>any</em> app where a user is present. Everything else is a deprecated shortcut.</p>
+
+  <svg class="diagram" viewBox="0 0 940 320" width="900" height="320">
+    <!-- lanes -->
+    <rect x="20"  y="20" width="140" height="40" rx="5" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="90"  y="45" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">User-Agent</text>
+    <rect x="270" y="20" width="140" height="40" rx="5" fill="#1a1a2a" stroke="#f5a623" stroke-width="1.5"/>
+    <text x="340" y="45" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
+    <rect x="520" y="20" width="160" height="40" rx="5" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="600" y="45" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Authorization Server</text>
+    <rect x="770" y="20" width="150" height="40" rx="5" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
+    <text x="845" y="45" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">Resource Server</text>
+
+    <line x1="90"  y1="60" x2="90"  y2="310" stroke="#2a2a3a" stroke-width="1" stroke-dasharray="3,3"/>
+    <line x1="340" y1="60" x2="340" y2="310" stroke="#2a2a3a" stroke-width="1" stroke-dasharray="3,3"/>
+    <line x1="600" y1="60" x2="600" y2="310" stroke="#2a2a3a" stroke-width="1" stroke-dasharray="3,3"/>
+    <line x1="845" y1="60" x2="845" y2="310" stroke="#2a2a3a" stroke-width="1" stroke-dasharray="3,3"/>
+
+    <!-- 1: user → client -->
+    <line x1="90"  y1="80"  x2="340" y2="80"  stroke="#60a5fa" stroke-width="1.2" marker-end="url(#a08b)"/>
+    <text x="215" y="75" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="10">1. click "log in"</text>
+    <!-- 2: client → user (redirect) -->
+    <line x1="340" y1="105" x2="90"  y2="105" stroke="#f5a623" stroke-width="1.2" marker-end="url(#a08a)"/>
+    <text x="215" y="100" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="10">2. 302 → /authorize?...&amp;code_challenge=...</text>
+    <!-- 3: user → AS -->
+    <line x1="90"  y1="130" x2="600" y2="130" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#a08b)"/>
+    <text x="345" y="125" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="10">3. GET /authorize → user logs in &amp; consents</text>
+    <!-- 4: AS → user (with code) -->
+    <line x1="600" y1="155" x2="90"  y2="155" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#a08p)"/>
+    <text x="345" y="150" text-anchor="middle" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="10">4. 302 redirect_uri?code=AUTH_CODE&amp;state=...</text>
+    <!-- 5: user → client -->
+    <line x1="90"  y1="180" x2="340" y2="180" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#a08b)"/>
+    <text x="215" y="175" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="10">5. browser delivers ?code=...</text>
+    <!-- 6: client → AS (back-channel) -->
+    <line x1="340" y1="210" x2="600" y2="210" stroke="#f5a623" stroke-width="1.4" marker-end="url(#a08a)"/>
+    <text x="470" y="205" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="10">6. POST /token (code, code_verifier, client_id+secret)</text>
+    <!-- 7: AS → client -->
+    <line x1="600" y1="235" x2="340" y2="235" stroke="#a78bfa" stroke-width="1.4" marker-end="url(#a08p)"/>
+    <text x="470" y="230" text-anchor="middle" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="10">7. { access_token, refresh_token, id_token }</text>
+    <!-- 8: client → RS -->
+    <line x1="340" y1="265" x2="845" y2="265" stroke="#f5a623" stroke-width="1.2" marker-end="url(#a08a)"/>
+    <text x="592" y="260" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="10">8. GET /api/me  Authorization: Bearer &lt;access_token&gt;</text>
+    <!-- 9: RS → client -->
+    <line x1="845" y1="290" x2="340" y2="290" stroke="#4ecb8d" stroke-width="1.2" marker-end="url(#a08g)"/>
+    <text x="592" y="285" text-anchor="middle" fill="#4ecb8d" font-family="JetBrains Mono,monospace" font-size="10">9. 200 { user data }</text>
+
+    <defs>
+      <marker id="a08b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#60a5fa"/></marker>
+      <marker id="a08a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f5a623"/></marker>
+      <marker id="a08p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a78bfa"/></marker>
+      <marker id="a08g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4ecb8d"/></marker>
+    </defs>
+  </svg>
+
+  <div class="cols cols-3" style="margin-top:0.2em;">
+    <div class="card amber"><h3 class="a">Front-channel</h3><p>Steps 2–5 go through the user's browser. Anything visible — including the code — must be considered intercept-able.</p></div>
+    <div class="card green"><h3 class="g">Back-channel</h3><p>Step 6 is server-to-server, TLS, with PKCE proof + (for confidential clients) a client secret. This is where the real token lives.</p></div>
+    <div class="card purple"><h3 class="p">Why the dance?</h3><p>Splitting front and back channels means a leaked code alone is useless without the back-channel verifier &amp; secret.</p></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 10 — PKCE ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">09</span>
+    <h2>PKCE — Proof Key for Code Exchange</h2>
+  </div>
+  <p><span class="a">RFC 7636</span> (2015). Originally a fix for native apps that couldn't keep a client secret. <span class="g">In OAuth 2.1, PKCE is mandatory for every client</span> — public or confidential.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The mechanism</h3>
+<pre><code># Client generates a high-entropy random string
+code_verifier = base64url(random(32))           # ~43 chars
+
+# And derives the challenge
+code_challenge = base64url(SHA-256(code_verifier))
+
+# Sent on /authorize  (front-channel, visible)
+GET /authorize?
+    response_type=code&
+    client_id=app123&
+    code_challenge=XYZ&
+    code_challenge_method=S256&
+    redirect_uri=...&state=...
+
+# Sent on /token       (back-channel, secret)
+POST /token  code=AUTH_CODE&
+             code_verifier=ORIGINAL_VERIFIER&
+             ...</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Why it works</h3>
+        <ul>
+          <li>The AS stores the <code>code_challenge</code> alongside the issued <code>code</code>.</li>
+          <li>At <code>/token</code>, the AS computes <code>SHA-256(code_verifier)</code> and compares.</li>
+          <li>An attacker who steals the front-channel code <span class="r">cannot redeem it</span> — they don't have the verifier.</li>
+          <li>An attacker who steals only the back-channel verifier has nothing to redeem either.</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Mandatory in OAuth 2.1</h3>
+        <ul>
+          <li>Always use <code>S256</code>. <code>plain</code> is now forbidden.</li>
+          <li>Verifier must be 43–128 URL-safe characters.</li>
+          <li>Even confidential clients must use it — defence in depth.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Common mistake</h3>
+        <p>Hardcoding a per-app verifier instead of generating fresh per-request. PKCE is <em>per-authorisation</em> — re-use defeats it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 11 — DEPRECATED FLOWS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">10</span>
+    <h2>The Deprecated Flows — What Not To Use</h2>
+  </div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card red">
+        <h3 class="r">Implicit Flow (response_type=token)</h3>
+        <ul>
+          <li>Designed for SPAs in 2012 — token returned <em>directly</em> in the redirect URL fragment.</li>
+          <li>No back-channel exchange, no client secret, no PKCE.</li>
+          <li>Tokens leaked via browser history, referer headers, server logs.</li>
+          <li><span class="r">Removed</span> in OAuth 2.1. SPAs now use Authorization Code + PKCE.</li>
+        </ul>
+<pre><code># Old, dangerous
+GET /authorize?response_type=token&client_id=...
+# returns: https://app/cb#access_token=eyJ...&token_type=Bearer
+
+# Modern replacement
+GET /authorize?response_type=code&code_challenge=...&...</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card red">
+        <h3 class="r">Resource Owner Password Credentials</h3>
+        <ul>
+          <li>User gives the client their username + password directly.</li>
+          <li>Reintroduces the exact anti-pattern OAuth was designed to kill.</li>
+          <li>Cannot do MFA, can't show consent, can't be revoked at the AS.</li>
+          <li><span class="r">Removed</span> in OAuth 2.1. Use Auth Code + PKCE in a system browser instead.</li>
+        </ul>
+<pre><code>POST /token
+grant_type=password&
+username=alice&password=hunter2&
+client_id=...      # never do this</code></pre>
+      </div>
+      <div class="card amber" style="margin-top:0.4em;">
+        <h3 class="a">"But I trust my own app!"</h3>
+        <p>That argument was used by every breached first-party app. Modern guidance (BCP 240): always launch a real browser, even for first-party apps. AppAuth libraries (iOS / Android) make this painless.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 12 — CLIENT CREDENTIALS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">11</span>
+    <h2>Client Credentials — Machine-to-Machine</h2>
+  </div>
+  <p>For service-to-service calls where <span class="a">no user is involved</span>. The client authenticates with its own credentials and gets an access token bound to itself, not a user.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The exchange</h3>
+<pre><code>POST /token HTTP/1.1
+Host: auth.example.com
+Authorization: Basic base64(client_id:client_secret)
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&
+scope=invoices:read&
+audience=https://api.billing.internal
+
+# response
+{ "access_token": "eyJ...",
+  "token_type": "Bearer",
+  "expires_in": 3600 }</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Use cases</h3>
+        <ul>
+          <li>Cron jobs hitting an internal API</li>
+          <li>Microservices behind an internal gateway</li>
+          <li>CI pipelines pushing artefacts</li>
+          <li>Backend MCP servers calling other backend APIs (no user context)</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Stronger client auth</h3>
+        <ul>
+          <li><span class="a">private_key_jwt</span> — client signs a JWT assertion with its own key (RFC 7523). No shared secret in transit.</li>
+          <li><span class="a">tls_client_auth</span> — mTLS with a client certificate (RFC 8705).</li>
+          <li>Both required by FAPI 2.0; preferred over <code>client_secret_basic</code> for sensitive M2M.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Common misuse</h3>
+        <p>Using client credentials on behalf of a user — the resulting token has no user identity, only "client X's token". Auditing breaks. Use Auth Code or token exchange instead.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 13 — DEVICE CODE ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">12</span>
+    <h2>Device Authorization Grant</h2>
+  </div>
+  <p><span class="a">RFC 8628</span> (2019). For devices with no browser or limited input — TVs, CLIs, IoT, terminal sessions. The flow you've used a hundred times: <em>"go to <code>github.com/login/device</code> and enter ABCD-1234"</em>.</p>
+
+  <svg class="diagram" viewBox="0 0 920 220" width="860" height="220">
+    <rect x="20"  y="20" width="160" height="40" rx="5" fill="#1a1a2a" stroke="#f5a623" stroke-width="1.5"/>
+    <text x="100" y="45" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">Device (CLI/TV)</text>
+    <rect x="380" y="20" width="160" height="40" rx="5" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="460" y="45" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Auth Server</text>
+    <rect x="740" y="20" width="160" height="40" rx="5" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="820" y="45" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">User on Phone</text>
+
+    <line x1="180" y1="80"  x2="380" y2="80"  stroke="#f5a623" stroke-width="1.2" marker-end="url(#a13a)"/>
+    <text x="280" y="75" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="10">1. POST /device_authorization</text>
+    <line x1="380" y1="105" x2="180" y2="105" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#a13p)"/>
+    <text x="280" y="100" text-anchor="middle" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="10">2. { device_code, user_code, verification_uri }</text>
+    <line x1="100" y1="125" x2="100" y2="180" stroke="#888" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <text x="105" y="155" fill="#888" font-family="JetBrains Mono,monospace" font-size="10">show "ABCD-1234"</text>
+    <line x1="180" y1="160" x2="740" y2="160" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#a13b)"/>
+    <text x="460" y="155" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="10">3. user types code at verification_uri, signs in &amp; consents</text>
+    <line x1="180" y1="195" x2="380" y2="195" stroke="#f5a623" stroke-width="1.2" marker-end="url(#a13a)"/>
+    <text x="280" y="190" text-anchor="middle" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="10">4. POST /token (poll)</text>
+    <text x="280" y="210" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="9">→ authorization_pending → eventually access_token</text>
+
+    <defs>
+      <marker id="a13a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f5a623"/></marker>
+      <marker id="a13p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a78bfa"/></marker>
+      <marker id="a13b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#60a5fa"/></marker>
+    </defs>
+  </svg>
+
+  <div class="cols cols-2" style="margin-top:0.2em;">
+    <div class="card green">
+      <h3 class="g">Where you've seen it</h3>
+      <ul>
+        <li><code>gh auth login</code>, <code>gcloud auth login</code></li>
+        <li>Smart TVs signing into Netflix / YouTube / Disney+</li>
+        <li>Microsoft Authenticator on the phone for Office logins</li>
+        <li>Many MCP server first-time setups for headless agents</li>
+      </ul>
+    </div>
+    <div class="card amber">
+      <h3 class="a">Security notes</h3>
+      <ul>
+        <li>The user code is short (8 chars) — rate-limit verification attempts.</li>
+        <li>Phishable: an attacker can ask <em>you</em> to type their code into the AS. Show what scopes &amp; client are being approved.</li>
+        <li>Pair with PKCE-equivalent device-code-binding where possible.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 14 — SCOPES ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">13</span>
+    <h2>Scopes, Audience &amp; Resource Indicators</h2>
+  </div>
+  <p>Scope is the OAuth answer to "<em>what can this token do?</em>". Audience is "<em>which API can it do it to?</em>". Both must be checked.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Scopes — convention, not rule</h3>
+<pre><code># Google
+scope=openid email profile
+      https://www.googleapis.com/auth/drive.readonly
+
+# GitHub
+scope=repo:status read:user user:email
+
+# Generic verb:resource
+scope=invoices:read invoices:write
+      payments:refund
+
+# OIDC reserved
+scope=openid          # required for OIDC
+scope=offline_access  # request a refresh token</code></pre>
+        <p style="margin-top:.3em;">Strings are opaque to OAuth. Each AS / API defines its own vocabulary. Granularity is a UX vs security trade-off.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Resource Indicators — RFC 8707</h3>
+<pre><code>POST /token
+grant_type=authorization_code&
+code=...&
+resource=https://api.invoices.example.com&
+resource=https://api.payments.example.com</code></pre>
+        <p style="margin-top:.3em;">The <code>resource</code> parameter pins the issued token's <span class="a">aud</span> claim. The RS must reject any token whose <code>aud</code> doesn't match its own URL.</p>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Why audience matters — confused deputy</h3>
+        <p>Without audience binding, a token issued for a friendly RS can be replayed against an unrelated RS that trusts the same AS. This is the root cause of the <span class="r">"token passthrough"</span> vulnerability you'll see again in Part 2 (MCP).</p>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Consent UX</h3>
+        <p>"<em>App X wants to: read your invoices &middot; refund payments</em>" — the consent screen renders scope IDs into human strings the AS controls. Bad scope names = bad consent UX.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 15 — OIDC ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">14</span>
+    <h2>OpenID Connect — Identity on Top</h2>
+  </div>
+  <p>OAuth 2.0 says <em>nothing</em> about who the user is. <span class="a">OpenID Connect (OIDC)</span> — finalised 2014 by the OpenID Foundation — is a thin identity layer on top of OAuth 2.0. It is what powers "Sign in with Google / Microsoft / Apple".</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">What it adds</h3>
+        <ul>
+          <li><span class="g">ID token</span> — a signed JWT about the user, returned alongside the access token.</li>
+          <li><span class="g">/userinfo</span> endpoint — fetch user attributes with the access token.</li>
+          <li><span class="g">openid scope</span> — required to opt in.</li>
+          <li><span class="g">Discovery</span> — <code>/.well-known/openid-configuration</code> JSON document.</li>
+          <li><span class="g">Standard claims</span> — <code>sub</code>, <code>email</code>, <code>name</code>, <code>picture</code>, etc.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">A typical ID token (decoded)</h3>
+<pre><code>{
+  "iss": "https://accounts.google.com",
+  "sub": "1098765432109876543210",
+  "aud": "client123.apps.googleusercontent.com",
+  "iat": 1700000000,
+  "exp": 1700003600,
+  "email": "alice@example.com",
+  "email_verified": true,
+  "name": "Alice Example",
+  "picture": "https://lh3..."
+}</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">OAuth vs OIDC — the rule</h3>
+        <ul>
+          <li>"<span class="a">Log in</span> with X" → OIDC.</li>
+          <li>"<span class="a">Connect</span> X to access something" → plain OAuth.</li>
+          <li>If you want both — request <code>openid</code> + your API scopes in the same flow.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Discovery example</h3>
+<pre><code>$ curl https://accounts.google.com/.well-known/openid-configuration
+
+{
+  "issuer": "https://accounts.google.com",
+  "authorization_endpoint": "https://accounts.google.com/o/oauth2/v2/auth",
+  "token_endpoint": "https://oauth2.googleapis.com/token",
+  "jwks_uri": "https://www.googleapis.com/oauth2/v3/certs",
+  "userinfo_endpoint": "https://openidconnect.googleapis.com/v1/userinfo",
+  "response_types_supported": ["code","token","id_token", ...],
+  ...
+}</code></pre>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Don't use access tokens for identity</h3>
+        <p>An access token says <em>"this client may call this API"</em>, not <em>"this is user U"</em>. Always derive identity from the ID token's <code>sub</code> claim, never by introspecting an access token.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 16 — JWT ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">15</span>
+    <h2>JWTs in OAuth — Anatomy &amp; Verification</h2>
+  </div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Three dot-separated parts</h3>
+<pre><code>eyJhbGciOiJSUzI1NiIsImtpZCI6IjE0MyJ9        # header
+.eyJpc3MiOiJodHRwczovL2lzcy5leGFtcGxlIiw   # payload
+  ic3ViIjoiNDQiLCJhdWQiOiJhcGkiLCJleHAiOj
+  E3MDAwMDM2MDB9
+.kxQ8...                                    # signature</code></pre>
+<pre><code># Header
+{ "alg":"RS256", "kid":"143", "typ":"JWT" }
+
+# Payload
+{ "iss":"https://iss.example",
+  "sub":"44", "aud":"api",
+  "iat":1700000000, "exp":1700003600,
+  "scope":"invoices:read",
+  "client_id":"app123" }</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Validation checklist</h3>
+        <ol style="padding-left:1.2em;">
+          <li>Verify <code>alg</code> is what you expect (RS256, ES256). <span class="r">Reject <code>none</code> and reject HS256 if you only have a public key.</span></li>
+          <li>Find the public key in JWKS by <code>kid</code>. Cache, but rotate.</li>
+          <li>Verify the signature.</li>
+          <li>Check <code>iss</code> matches the AS you trust.</li>
+          <li>Check <code>aud</code> contains your RS identifier.</li>
+          <li>Check <code>exp</code> is in the future and <code>nbf</code> in the past.</li>
+          <li>Check <code>scope</code> covers the operation requested.</li>
+        </ol>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Classic JWT mistakes</h3>
+        <ul>
+          <li>Trusting <code>alg:none</code> tokens.</li>
+          <li>HS256/RS256 confusion — verifying an attacker-supplied HS256 token using the RSA public key as the HMAC secret.</li>
+          <li>Skipping <code>aud</code> check (confused deputy).</li>
+          <li>Treating an unsigned base64 payload as authoritative.</li>
+          <li>Putting refresh tokens or PII in JWTs that hit logs.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 17 — OAUTH 2.1 ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">16</span>
+    <h2>OAuth 2.1 — The Consolidation</h2>
+  </div>
+  <p>OAuth 2.1 (<span class="a">draft-ietf-oauth-v2-1</span>, in late-stage IETF review) is not a new protocol — it's RFC 6749 + a decade of errata + the security best practices (BCP 240) folded into one document.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card green">
+        <h3 class="g">What's in</h3>
+        <ul>
+          <li><span class="a">Authorization Code + PKCE for everyone</span> (public &amp; confidential).</li>
+          <li><span class="a">Refresh token rotation</span> required for public clients.</li>
+          <li>Strict <span class="a">redirect_uri</span> string matching — no wildcards.</li>
+          <li>HTTPS everywhere.</li>
+          <li>Client Credentials and Device Code retained.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">What's out</h3>
+        <ul>
+          <li><span class="r">Implicit Flow</span> — gone.</li>
+          <li><span class="r">Resource Owner Password Credentials</span> — gone.</li>
+          <li><span class="r">Bearer tokens in URI query strings</span> — banned.</li>
+          <li><span class="r">PKCE <code>plain</code> method</span> — banned (S256 only).</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card amber">
+        <h3 class="a">Companion specs you should also know</h3>
+        <table>
+          <thead><tr><th>RFC</th><th>What it adds</th></tr></thead>
+          <tbody>
+            <tr><td>RFC 8252</td><td>OAuth for Native Apps (use the system browser)</td></tr>
+            <tr><td>RFC 8414</td><td>Authorization Server Metadata (<code>/.well-known/...</code>)</td></tr>
+            <tr><td>RFC 7591 / 7592</td><td>Dynamic Client Registration / Management</td></tr>
+            <tr><td>RFC 8628</td><td>Device Authorization Grant</td></tr>
+            <tr><td>RFC 8693</td><td>Token Exchange</td></tr>
+            <tr><td>RFC 8705</td><td>mTLS Client Auth &amp; Sender-Constrained Tokens</td></tr>
+            <tr><td>RFC 8707</td><td>Resource Indicators (audience binding)</td></tr>
+            <tr><td>RFC 9068</td><td>JWT Profile for Access Tokens</td></tr>
+            <tr><td>RFC 9126</td><td>Pushed Authorization Requests (PAR)</td></tr>
+            <tr><td>RFC 9396</td><td>Rich Authorization Requests (RAR)</td></tr>
+            <tr><td>RFC 9449</td><td>DPoP — sender-constrained bearer tokens</td></tr>
+            <tr><td>RFC 9728</td><td>OAuth 2.0 Protected Resource Metadata</td></tr>
+            <tr><td>BCP 240</td><td>OAuth 2.0 Security Best Current Practice</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 18 — DPoP / mTLS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">17</span>
+    <h2>DPoP &amp; mTLS — Beyond Bearer</h2>
+  </div>
+  <p>Bearer tokens have one fatal property: anyone who steals one can use it. <span class="a">Sender-constrained</span> tokens fix that by binding the token to a key only the legitimate client controls.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">DPoP — Demonstration of Proof-of-Possession</h3>
+<pre><code>POST /api/payment HTTP/1.1
+Host: api.example.com
+Authorization: DPoP eyJhbGciOiJSUzI1NiI...
+DPoP: eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2In0.
+      eyJqdGkiOiJlMS4uIiwiaHRtIjoiUE9TVCIsImh0dSI6
+       Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tL3BheW1lbnQiLA
+       AiaWF0IjoxNzAwMDAwMDAwfQ.signature</code></pre>
+        <ul>
+          <li>Client mints a fresh JWT (the DPoP proof) per request, signed with a private key it generated locally.</li>
+          <li>Proof binds the request to: HTTP method, URL, timestamp, and a unique <code>jti</code>.</li>
+          <li>Token's <code>cnf.jkt</code> claim contains a hash of the public key — RS rejects mismatched proofs.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">mTLS sender-constrained tokens (RFC 8705)</h3>
+        <ul>
+          <li>Client establishes a mutual-TLS connection with its X.509 certificate.</li>
+          <li>AS records a hash of the client cert in the token's <code>cnf.x5t#S256</code> claim.</li>
+          <li>RS verifies the calling cert hash matches.</li>
+          <li>Standard in banking (FAPI 2.0), some healthcare deployments.</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">When to use which</h3>
+        <table>
+          <thead><tr><th>&nbsp;</th><th>DPoP</th><th>mTLS</th></tr></thead>
+          <tbody>
+            <tr><td>Browser clients</td><td><span class="g">yes</span></td><td><span class="r">no</span></td></tr>
+            <tr><td>Mobile clients</td><td><span class="g">yes</span></td><td>painful</td></tr>
+            <tr><td>Backend services</td><td>fine</td><td><span class="g">preferred</span></td></tr>
+            <tr><td>Infra burden</td><td>low</td><td>PKI required</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Why this matters for MCP</h3>
+        <p>Remote MCP servers exchange tokens over the public internet — Bearer tokens here are particularly tempting targets. The MCP authorisation profile recommends DPoP; we'll see this again in Part 2.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 19 — VULNS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">18</span>
+    <h2>Common Attacks &amp; How OAuth Defends</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Attack</th><th>How it works</th><th>Defence</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="r">Authorization Code Interception</span></td>
+        <td>Native app's custom URI scheme is registered by a malicious app on the same device; it receives the <code>code</code>.</td>
+        <td><span class="g">PKCE</span> — stolen code can't be redeemed without the verifier.</td>
+      </tr>
+      <tr>
+        <td><span class="r">CSRF on redirect_uri</span></td>
+        <td>Attacker tricks victim's browser into completing a flow against the attacker's account.</td>
+        <td><span class="g">state</span> parameter — random, bound to the user's session, validated on callback.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Open Redirector</span></td>
+        <td>A loose <code>redirect_uri</code> match (wildcards) lets an attacker exfiltrate the code via a controlled domain.</td>
+        <td><span class="g">Strict string match</span> on <code>redirect_uri</code> (mandatory in 2.1).</td>
+      </tr>
+      <tr>
+        <td><span class="r">Mix-up Attack</span></td>
+        <td>Client supports multiple AS; attacker tricks it into sending an honest AS's code to a malicious AS that already has a valid client_id.</td>
+        <td><span class="g">iss</span> parameter on the callback (RFC 9207). Match against the AS the flow started with.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Token Theft / Replay</span></td>
+        <td>Bearer access token leaks via logs, proxy, browser extension; attacker replays.</td>
+        <td><span class="g">DPoP / mTLS</span> sender-constrained tokens; short TTLs; refresh rotation.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Refresh Token Theft</span></td>
+        <td>Long-lived RT exfiltrated from a public client.</td>
+        <td><span class="g">Rotation</span> — old RT invalidated on every use; reuse detected as compromise.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Confused Deputy</span></td>
+        <td>Token issued for API A is replayed against API B that also trusts the AS.</td>
+        <td><span class="g">Audience binding</span> via Resource Indicators (RFC 8707) + <code>aud</code> validation.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Authorization Server Phishing</span></td>
+        <td>Attacker hosts a fake consent screen that looks like Google's.</td>
+        <td>Always launch the AS in the system browser (RFC 8252), not an embedded webview.</td>
+      </tr>
+      <tr>
+        <td><span class="r">Click-Through Consent</span></td>
+        <td>Users approve everything without reading.</td>
+        <td>Granular scopes, plain-English consent strings, periodic re-consent.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card amber" style="margin-top:0.4em;">
+    <h3 class="a">Read this once</h3>
+    <p>RFC 9700 (BCP 240) — <em>"OAuth 2.0 Security Best Current Practice"</em>. Forty pages. Every implementer should have read it.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 20 — OAUTH VS OTHER ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">19</span>
+    <h2>OAuth vs SAML vs API Keys vs WebAuthn</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Mechanism</th><th>What it does</th><th>Best for</th><th>Caveat</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="a">OAuth 2.0/2.1</span></td>
+        <td>Delegated authorisation (token issuance for third-party apps)</td>
+        <td>API access on behalf of a user; M2M tokens; mobile/SPA</td>
+        <td>It's a framework, not a turnkey protocol — easy to misconfigure</td>
+      </tr>
+      <tr>
+        <td><span class="g">OpenID Connect</span></td>
+        <td>Identity / SSO layer on top of OAuth 2.0</td>
+        <td>"Sign in with..." flows, modern federated SSO</td>
+        <td>Adds JWT validation complexity</td>
+      </tr>
+      <tr>
+        <td><span class="p">SAML 2.0</span></td>
+        <td>XML-based browser SSO between IdP and SP</td>
+        <td>Enterprise SSO (Workday, Salesforce, internal apps)</td>
+        <td>XML-DSig is brittle; no native API delegation</td>
+      </tr>
+      <tr>
+        <td><span class="b">API keys</span></td>
+        <td>Static shared secret per client</td>
+        <td>Simple machine-to-machine, internal services, getting started</td>
+        <td>No expiry, no scopes, painful rotation, no user context</td>
+      </tr>
+      <tr>
+        <td><span class="r">HTTP Basic / Digest</span></td>
+        <td>Username + password per request</td>
+        <td>Internal admin tools behind a VPN</td>
+        <td>Sends credentials on every call; no MFA</td>
+      </tr>
+      <tr>
+        <td><span class="a">WebAuthn / Passkeys</span></td>
+        <td>Phishing-resistant user authentication using device-bound keys</td>
+        <td>First-factor user login; replaces passwords</td>
+        <td>Authentication only — pair with OIDC for SSO + OAuth for API delegation</td>
+      </tr>
+      <tr>
+        <td><span class="g">Macaroons / Biscuit</span></td>
+        <td>Capability tokens with caveats (attenuation in the client)</td>
+        <td>Fine-grained delegation chains, offline-friendly</td>
+        <td>Niche; little ecosystem support</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div class="card amber">
+      <h3 class="a">Common stacks today</h3>
+      <ul>
+        <li><span class="g">Consumer apps</span> — OIDC for login + OAuth 2.1 + PKCE for API access. Passkeys as the user's first factor.</li>
+        <li><span class="g">Enterprise SaaS</span> — SAML to the IdP for SSO + SCIM for provisioning + OIDC for newer apps.</li>
+        <li><span class="g">Microservices</span> — OAuth Client Credentials + mTLS sender-constrained tokens; sometimes SPIFFE for workload identity.</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h3 class="b">Decision rule of thumb</h3>
+      <ul>
+        <li>"User logs into our app" → OIDC.</li>
+        <li>"User authorises another app to call our API" → OAuth Auth Code + PKCE.</li>
+        <li>"Service A calls service B with no user" → OAuth Client Credentials (or mTLS).</li>
+        <li>"Legacy enterprise customer wants SSO" → SAML.</li>
+        <li>"Internal tool, behind VPN, low value" → Maybe API key — but plan migration.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 21 — PROVIDERS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">20</span>
+    <h2>Real-World Providers — Quick Tour</h2>
+  </div>
+  <p>Every modern login button is OAuth 2.0 + OIDC under the hood. The endpoints differ; the flow is the same.</p>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Google (Sign in with Google)</h3>
+<pre><code>Discovery:
+  https://accounts.google.com/.well-known/openid-configuration
+Authorize:
+  https://accounts.google.com/o/oauth2/v2/auth
+Token:
+  https://oauth2.googleapis.com/token
+JWKS:
+  https://www.googleapis.com/oauth2/v3/certs
+Scopes: openid email profile + Google API scopes</code></pre>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">GitHub</h3>
+<pre><code>Authorize: https://github.com/login/oauth/authorize
+Token:     https://github.com/login/oauth/access_token
+Device:    https://github.com/login/device/code
+User:      https://api.github.com/user
+Scopes: repo, read:user, user:email, ...
+Note: opaque tokens (not JWTs); separate fine-grained PATs.</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Microsoft Entra ID (formerly Azure AD)</h3>
+<pre><code>Discovery:
+  https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration
+Authorize: .../oauth2/v2.0/authorize
+Token:     .../oauth2/v2.0/token
+Scopes: openid offline_access User.Read https://graph.microsoft.com/.default
+Multi-tenant via {tenant}=common or {tenant}=organizations</code></pre>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">"Sign in with Apple"</h3>
+        <ul>
+          <li>OIDC — issues an ID token JWT.</li>
+          <li>Quirk: only returns the user's name on <em>first</em> login. Lose it and it's gone.</li>
+          <li>Required by App Store guidelines if you offer any other social login.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:.5em; color:#a0a0c0;"><em>Part 2 of this deck covers the full provider landscape — Auth0, Okta, AWS Cognito, Stytch, WorkOS, Clerk, Descope, plus the open-source side: Keycloak, Authentik, ZITADEL, Ory Hydra, Authelia, Logto, SuperTokens — and how to wire each into a remote MCP server.</em></p>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 22 — LIBRARIES ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">21</span>
+    <h2>Libraries — Don't Hand-Roll This</h2>
+  </div>
+  <p>OAuth is a "<em>15 lines of code</em>" demo and a "<em>thousand-line spec to get right</em>" reality. Use a library that already passes the conformance suite.</p>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Client side (your app calls an OAuth-protected API)</h3>
+        <ul>
+          <li><span class="g">JS / browser</span> — <code>oauth4webapi</code>, <code>oidc-client-ts</code>, Auth0 SPA SDK</li>
+          <li><span class="g">Node.js</span> — <code>openid-client</code>, <code>passport-oauth2</code></li>
+          <li><span class="g">Python</span> — <code>authlib</code>, <code>requests-oauthlib</code></li>
+          <li><span class="g">Go</span> — <code>golang.org/x/oauth2</code> + <code>github.com/coreos/go-oidc</code></li>
+          <li><span class="g">Rust</span> — <code>oauth2</code> crate, <code>openidconnect</code></li>
+          <li><span class="g">Java/Kotlin</span> — Spring Security OAuth Client, Nimbus</li>
+          <li><span class="g">Mobile</span> — AppAuth (iOS/Android)</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Resource server side (validate incoming tokens)</h3>
+        <ul>
+          <li><span class="g">Node.js</span> — <code>jose</code>, <code>express-oauth2-jwt-bearer</code></li>
+          <li><span class="g">Python</span> — <code>authlib</code> ResourceProtector, <code>PyJWT</code> + JWKS cache</li>
+          <li><span class="g">Go</span> — <code>github.com/golang-jwt/jwt</code> + <code>github.com/MicahParks/keyfunc</code></li>
+          <li><span class="g">Rust</span> — <code>jsonwebtoken</code>, <code>axum-jwks</code></li>
+          <li><span class="g">Java</span> — Spring Security Resource Server, Nimbus</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Conformance suites worth knowing</h3>
+        <ul>
+          <li><span class="a">OpenID Foundation Conformance</span> — <code>openid.net/certification</code> — the gold standard.</li>
+          <li><span class="a">FAPI conformance</span> for high-security profiles.</li>
+          <li>Use <code>oauth-tools</code> / <code>oauth-debugger</code> in dev to inspect what flows your AS actually does.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 23 — DECISION ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">22</span>
+    <h2>Choosing a Flow — Decision Matrix</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Your client is...</th><th>User present?</th><th>Use this flow</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Server-side web app (Express, Rails, Django)</td>
+        <td>yes</td>
+        <td><span class="g">Authorization Code + PKCE</span></td>
+        <td>Confidential client; can keep a client secret.</td>
+      </tr>
+      <tr>
+        <td>SPA (React, Vue, Angular in the browser)</td>
+        <td>yes</td>
+        <td><span class="g">Authorization Code + PKCE</span></td>
+        <td>Public client; no secret. Or use a backend-for-frontend.</td>
+      </tr>
+      <tr>
+        <td>Mobile app (iOS, Android)</td>
+        <td>yes</td>
+        <td><span class="g">Authorization Code + PKCE</span></td>
+        <td>System browser via AppAuth; never an embedded webview (RFC 8252).</td>
+      </tr>
+      <tr>
+        <td>CLI / desktop tool</td>
+        <td>yes</td>
+        <td><span class="g">Auth Code + PKCE</span> (loopback) <em>or</em> <span class="g">Device Code</span></td>
+        <td>Loopback works on dev machines; device code is best when no browser is local.</td>
+      </tr>
+      <tr>
+        <td>Smart TV / IoT / kiosk</td>
+        <td>yes (on a phone)</td>
+        <td><span class="g">Device Authorization</span></td>
+        <td>RFC 8628.</td>
+      </tr>
+      <tr>
+        <td>Cron job / backend service</td>
+        <td>no</td>
+        <td><span class="g">Client Credentials</span></td>
+        <td>Use <code>private_key_jwt</code> or mTLS for stronger client auth.</td>
+      </tr>
+      <tr>
+        <td>Service-A calling Service-B with user context</td>
+        <td>indirectly</td>
+        <td><span class="g">Token Exchange</span> (RFC 8693)</td>
+        <td>Preserves the original user identity through the chain.</td>
+      </tr>
+      <tr>
+        <td>Local MCP server (stdio)</td>
+        <td>n/a</td>
+        <td><span class="r">no OAuth</span></td>
+        <td>Process boundary is local; trust the launching app.</td>
+      </tr>
+      <tr>
+        <td>Remote MCP server (HTTP)</td>
+        <td>yes</td>
+        <td><span class="g">Auth Code + PKCE + Resource Indicators (+ DPoP)</span></td>
+        <td>See Part 2 of this deck.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 24 — CHEAT SHEET ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">23</span>
+    <h2>Cheat Sheet — Endpoints, Params, Errors</h2>
+  </div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">/authorize parameters</h3>
+        <table>
+          <thead><tr><th>Param</th><th>Required</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>response_type</code></td><td>yes</td><td>Always <code>code</code></td></tr>
+            <tr><td><code>client_id</code></td><td>yes</td><td>Issued by AS</td></tr>
+            <tr><td><code>redirect_uri</code></td><td>yes</td><td>Pre-registered, exact match</td></tr>
+            <tr><td><code>scope</code></td><td>yes</td><td>Space-separated</td></tr>
+            <tr><td><code>state</code></td><td><span class="g">CSRF</span></td><td>Random per-request</td></tr>
+            <tr><td><code>code_challenge</code></td><td><span class="g">PKCE</span></td><td>S256 hash</td></tr>
+            <tr><td><code>code_challenge_method</code></td><td>yes</td><td><code>S256</code></td></tr>
+            <tr><td><code>nonce</code></td><td>OIDC</td><td>Reflected in ID token</td></tr>
+            <tr><td><code>resource</code></td><td>RFC 8707</td><td>Pin token audience</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">/token request</h3>
+<pre><code>POST /token HTTP/1.1
+Authorization: Basic base64(client_id:secret)   # confidential
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&
+code=AUTH_CODE&
+redirect_uri=https://app/cb&
+code_verifier=ORIGINAL_VERIFIER</code></pre>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">/token error responses</h3>
+        <ul>
+          <li><code>invalid_request</code> — missing/bad parameter</li>
+          <li><code>invalid_client</code> — auth failed</li>
+          <li><code>invalid_grant</code> — code/refresh token rejected</li>
+          <li><code>unauthorized_client</code> — client not allowed this grant</li>
+          <li><code>unsupported_grant_type</code></li>
+          <li><code>invalid_scope</code></li>
+          <li><code>authorization_pending</code> / <code>slow_down</code> — device code polling</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">RS error (RFC 6750)</h3>
+<pre><code>HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="api",
+   error="invalid_token",
+   error_description="The access token expired"</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 25 — GOTCHAS ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">24</span>
+    <h2>Gotchas Caught in Production</h2>
+  </div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card red">
+        <h3 class="r">Client / browser side</h3>
+        <ul>
+          <li><span class="a">No <code>state</code></span> → CSRF on the callback. Pick a UUID per flow, store in session, compare.</li>
+          <li><span class="a">Trusting the access token for identity</span> → use the ID token's <code>sub</code>.</li>
+          <li><span class="a">Storing tokens in <code>localStorage</code></span> → XSS exfiltrates them. Prefer HttpOnly cookies + a backend-for-frontend.</li>
+          <li><span class="a">Embedded WebView for login</span> → user can't see the URL bar; phishable. Use the system browser (RFC 8252).</li>
+          <li><span class="a">Wildcard <code>redirect_uri</code></span> → <code>https://*.example.com</code> is an open redirector. Register exact strings.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card red">
+        <h3 class="r">Resource server side</h3>
+        <ul>
+          <li><span class="a">Skipping <code>aud</code></span> → confused deputy. Always pin to your RS URI.</li>
+          <li><span class="a">Caching JWKS forever</span> → key rotation breaks logins. Cache 10–60 min, refresh on unknown <code>kid</code>.</li>
+          <li><span class="a">Using HS256 for distributed verification</span> → every RS now needs the secret. Use RS256/ES256.</li>
+          <li><span class="a">Trusting <code>scope</code> without checking it</span> → you've reinvented "any token works".</li>
+          <li><span class="a">Logging Authorization headers</span> → the bearer token ends up in CloudWatch / Datadog. Scrub or use DPoP/mTLS.</li>
+        </ul>
+      </div>
+      <div class="card amber" style="margin-top:0.4em;">
+        <h3 class="a">Operational</h3>
+        <ul>
+          <li>Clock skew &gt; 1 minute → tokens look expired or not-yet-valid. NTP everywhere.</li>
+          <li>Refresh tokens that never rotate → stolen-token persistence forever.</li>
+          <li>Per-environment client IDs leaking into the wrong stage.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ SLIDE 26 — SUMMARY ═══════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">25</span>
+    <h2>Summary &amp; Where to Next</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">What we covered</h3>
+        <ul>
+          <li>Why OAuth exists — killing the password anti-pattern</li>
+          <li>OAuth 1.0a → 2.0 → 2.1: a 17-year arc</li>
+          <li>Roles, endpoints, tokens (access / refresh / ID)</li>
+          <li>Authorization Code Flow + PKCE — the one true path</li>
+          <li>Client Credentials &amp; Device Code grants</li>
+          <li>Why Implicit &amp; Password grants are gone</li>
+          <li>Scopes, audience, Resource Indicators</li>
+          <li>OpenID Connect — identity on top</li>
+          <li>JWT validation, DPoP, mTLS</li>
+          <li>OAuth 2.1 + companion RFCs roadmap</li>
+          <li>Common attacks &amp; defences (BCP 240)</li>
+          <li>Library &amp; flow selection</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Further reading</h3>
+        <p>RFC 6749 (core) &middot; RFC 6750 (Bearer) &middot; RFC 7636 (PKCE) &middot; RFC 8414 (AS Metadata) &middot; RFC 8628 (Device) &middot; RFC 8707 (Resource Indicators) &middot; RFC 9068 (JWT AT) &middot; RFC 9449 (DPoP) &middot; RFC 9700 / BCP 240 (Security BCP) &middot; OpenID Connect Core 1.0 &middot; oauth.net &middot; openid.net</p>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Companion deck — Part 2</h3>
+        <p><span class="a">"OAuth for MCP Servers &amp; the Identity Provider Landscape"</span></p>
+        <ul>
+          <li>The Anthropic MCP authorisation profile (2025)</li>
+          <li>How remote MCP servers use OAuth 2.1 + Resource Indicators</li>
+          <li>The Docker MCP Gateway and its OAuth interceptor</li>
+          <li>Commercial providers — Auth0/Okta, Microsoft Entra, AWS Cognito, Stytch, WorkOS, Clerk, Descope</li>
+          <li>Free / OSS — Keycloak, Authentik, ZITADEL, Ory Hydra, Authelia, Logto, SuperTokens</li>
+          <li>Worked examples and a production checklist</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">If you remember three things</h3>
+        <ol style="padding-left:1.2em;">
+          <li>OAuth = <span class="a">delegated authorisation</span>; OIDC = <span class="a">identity</span>; everyone needs both.</li>
+          <li><span class="a">Authorization Code + PKCE</span> is the only flow you should reach for when a user is involved.</li>
+          <li>Tokens must be <span class="a">audience-bound</span>; ideally <span class="a">sender-constrained</span> (DPoP/mTLS).</li>
+        </ol>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">One-line takeaway</h3>
+        <p>You don't implement OAuth — you <em>configure</em> it. Pick a conformant library, pin every parameter the spec lets you pin, and read BCP 240.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+</div><!-- /.slides -->
+</div><!-- /.reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 1100,
+  height: 900,
+  margin: 0.01,
+  plugins: [RevealHighlight],
+  highlight: { theme: 'monokai' }
+});
+</script>
+<script>
+(function(){
+  var h = Reveal.getConfig().height || 900;
+  var m = Reveal.getConfig().margin || 0.02;
+  var maxH = Math.floor(h * (1 - 2 * m)) + 'px';
+  function fixSlides(){
+    document.querySelectorAll('.reveal .slides>section,.reveal .slides>section>section').forEach(function(s){
+      s.style.display = 'block';
+      s.style.maxHeight = maxH;
+    });
+  }
+  Reveal.on('ready', fixSlides);
+  Reveal.on('slidechanged', fixSlides);
+})();
+</script>
+</body>
+</html>
