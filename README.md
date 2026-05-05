@@ -6,7 +6,9 @@ An interactive Reveal.js presentation covering **OAuth** — the delegated-autho
 
 ## 📄 [Markdown Version](presentation.md)
 
-## 🧪 [Companion deck — OAuth for MCP Servers & Providers](https://brendanjameslynskey.github.io/OAuth_for_MCP/)
+## 🌱 [Primer (Part 0) — OAuth: A Gentle Primer](https://brendanjameslynskey.github.io/OAuth_Primer/)
+
+## 🧪 [Companion deck (Part 2) — OAuth for MCP Servers & Providers](https://brendanjameslynskey.github.io/OAuth_for_MCP/)
 
 ---
 
@@ -64,6 +66,8 @@ RFC 6749 (OAuth 2.0 Framework) · RFC 6750 (Bearer Token Usage) · RFC 7636 (PKC
 
 ## See also
 
+- [OAuth — A Gentle Primer (Part 0)](https://github.com/BrendanJamesLynskey/OAuth_Primer) — the no-RFC, no-code mental-model warm-up for this deck.
+- [OAuth for MCP Servers (Part 2)](https://github.com/BrendanJamesLynskey/OAuth_for_MCP) — the MCP authorisation profile, Docker MCP Gateway, commercial and open-source provider landscape.
 - [Introduction to OpenID Connect](https://github.com/BrendanJamesLynskey/Introduction_to_OpenID_Connect) — OIDC in depth: ID-token validation, JWKS rotation, discovery, CIBA, SIOPv2, OpenID Federation 1.0, FAPI 2.0, workload OIDC.
 - [Cloud_aaS_04_SaaS_Architecture](https://github.com/BrendanJamesLynskey/Cloud_aaS_04_SaaS_Architecture) — B2B identity for multi-tenant SaaS (SAML / OIDC / SCIM federation, Auth-as-a-Service providers, audit logs).
 - Series hub: [Cloud `*aaS`](https://github.com/BrendanJamesLynskey/Cloud_aaS_Hub).
