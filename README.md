@@ -64,6 +64,7 @@ RFC 6749 (OAuth 2.0 Framework) · RFC 6750 (Bearer Token Usage) · RFC 7636 (PKC
 
 ## See also
 
+- [Introduction to OpenID Connect](https://github.com/BrendanJamesLynskey/Introduction_to_OpenID_Connect) — OIDC in depth: ID-token validation, JWKS rotation, discovery, CIBA, SIOPv2, OpenID Federation 1.0, FAPI 2.0, workload OIDC.
 - [Cloud_aaS_04_SaaS_Architecture](https://github.com/BrendanJamesLynskey/Cloud_aaS_04_SaaS_Architecture) — B2B identity for multi-tenant SaaS (SAML / OIDC / SCIM federation, Auth-as-a-Service providers, audit logs).
 - Series hub: [Cloud `*aaS`](https://github.com/BrendanJamesLynskey/Cloud_aaS_Hub).
 
