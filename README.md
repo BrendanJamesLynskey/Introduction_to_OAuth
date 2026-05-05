@@ -62,6 +62,11 @@ Single self-contained `index.html` — no build step, no npm, no dependencies to
 
 RFC 6749 (OAuth 2.0 Framework) · RFC 6750 (Bearer Token Usage) · RFC 7636 (PKCE) · RFC 8252 (Native Apps) · RFC 8414 (AS Metadata) · RFC 8628 (Device Authorization) · RFC 8693 (Token Exchange) · RFC 8705 (mTLS) · RFC 8707 (Resource Indicators) · RFC 9068 (JWT Profile for Access Tokens) · RFC 9126 (PAR) · RFC 9396 (RAR) · RFC 9449 (DPoP) · RFC 9700 (BCP 240 — Security BCP) · RFC 9728 (Protected Resource Metadata) · OpenID Connect Core 1.0 · oauth.net · openid.net
 
+## See also
+
+- [Cloud_aaS_04_SaaS_Architecture](https://github.com/BrendanJamesLynskey/Cloud_aaS_04_SaaS_Architecture) — B2B identity for multi-tenant SaaS (SAML / OIDC / SCIM federation, Auth-as-a-Service providers, audit logs).
+- Series hub: [Cloud `*aaS`](https://github.com/BrendanJamesLynskey/Cloud_aaS_Hub).
+
 ## License
 
 Educational use. Code examples provided as-is.
