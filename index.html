@@ -6,7 +6,7 @@
 <title>Introduction to OAuth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus:wght@400&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&family=Spline+Sans+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
 <style>
@@ -27,14 +27,14 @@
   .reveal-viewport { background: var(--bg); }
   .reveal .slides section { background: transparent; }
 
-  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
-  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal { font-family: 'Hanken Grotesk', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Marcellus', serif; font-weight: 700; }
   .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
   .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
   .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
   .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
   .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
-  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal code { font-family: 'Spline Sans Mono', monospace; font-size: .72em; }
   .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
                  border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
   .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #d9dcce; }
@@ -45,7 +45,7 @@
     padding-bottom: .2em; margin-bottom: .3em;
   }
   .slide-hdr .tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Spline Sans Mono', monospace;
     font-size: .42em; font-weight: 500;
     color: var(--bg); background: var(--amber);
     padding: .1em .4em; border-radius: 3px;
@@ -84,12 +84,12 @@
   .p  { color: var(--purple); font-weight: 600; }
   .b  { color: var(--blue); font-weight: 600; }
   .r  { color: var(--red); font-weight: 600; }
-  .mono { font-family: 'JetBrains Mono', monospace; }
+  .mono { font-family: 'Spline Sans Mono', monospace; }
 
   svg.diagram { display: block; margin: 0 auto; overflow: visible; }
 
   .pill {
-    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    display: inline-block; font-family: 'Spline Sans Mono', monospace;
     font-size: .44em; padding: .08em .4em; border-radius: 99px;
     border: 1px solid; margin: 0 .08em;
   }
@@ -101,14 +101,14 @@
   .reveal .slide-footer { display: none; }
   .title-slide h1 { font-size: 1.8em; }
   .title-slide .subtitle {
-    font-size: .7em; color: var(--green); font-family: 'DM Sans', sans-serif;
+    font-size: .7em; color: var(--green); font-family: 'Hanken Grotesk', sans-serif;
     font-weight: 300; letter-spacing: .04em; margin: .3em 0 .6em;
   }
-  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'Spline Sans Mono', monospace; }
 
   .ss-row {
     display: flex; gap: .25em; align-items: center;
-    margin: .1em 0; font-size: .55em; font-family: 'JetBrains Mono', monospace;
+    margin: .1em 0; font-size: .55em; font-family: 'Spline Sans Mono', monospace;
   }
   .ss-node {
     padding: .2em .55em; border-radius: 5px; font-size: .9em;
@@ -122,6 +122,7 @@
   .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
 .reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
 </style>
+<style>:root{font-synthesis-weight:none}</style>
 </head>
 <body>
 <div class="reveal">
@@ -131,7 +132,7 @@
 <!-- ═══════════════════════════════ SLIDE 01 — TITLE ═══════════════════════════════ -->
 <section class="title-slide" data-background-color="#0f231c">
   <div style="text-align:left; max-width:820px; margin:0 auto; padding: 1em 0;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
+    <div style="font-family:'Spline Sans Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
       TECHNICAL PRESENTATION &middot; PART 1 OF 2
     </div>
     <h1>Introduction to<br>OAuth</h1>
@@ -282,30 +283,30 @@
     <circle cx="780" cy="110" r="6" fill="#93b6cd"/>
     <circle cx="900" cy="110" r="6" fill="#93b6cd"/>
     <!-- labels above -->
-    <text x="80"  y="55" text-anchor="middle" fill="#da7d6b" font-family="Playfair Display,serif" font-size="13" font-weight="700">2006</text>
-    <text x="220" y="55" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">2007</text>
-    <text x="360" y="55" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">2010</text>
-    <text x="500" y="55" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">2012</text>
-    <text x="640" y="55" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">2014</text>
-    <text x="780" y="55" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">2020</text>
-    <text x="900" y="55" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">2024+</text>
+    <text x="80"  y="55" text-anchor="middle" fill="#da7d6b" font-family="Marcellus,serif" font-size="13" font-weight="700">2006</text>
+    <text x="220" y="55" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">2007</text>
+    <text x="360" y="55" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">2010</text>
+    <text x="500" y="55" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="13" font-weight="700">2012</text>
+    <text x="640" y="55" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="13" font-weight="700">2014</text>
+    <text x="780" y="55" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">2020</text>
+    <text x="900" y="55" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">2024+</text>
     <!-- labels below -->
-    <text x="80"  y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">Twitter</text>
-    <text x="80"  y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">delegation</text>
-    <text x="80"  y="170" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="9">problem</text>
-    <text x="220" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">OAuth 1.0</text>
-    <text x="220" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">draft</text>
-    <text x="360" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">OAuth 1.0a</text>
-    <text x="360" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">RFC 5849</text>
-    <text x="500" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">OAuth 2.0</text>
-    <text x="500" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">RFC 6749</text>
-    <text x="640" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">OpenID</text>
-    <text x="640" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">Connect 1.0</text>
-    <text x="780" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">2.1 draft +</text>
-    <text x="780" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">Sec BCP 240</text>
-    <text x="900" y="140" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">DPoP, RAR,</text>
-    <text x="900" y="155" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">MCP profile</text>
-    <text x="490" y="205" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">Eighteen years from "the password anti-pattern" to a sender-constrained, audience-bound, PKCE-mandatory OAuth 2.1.</text>
+    <text x="80"  y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">Twitter</text>
+    <text x="80"  y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">delegation</text>
+    <text x="80"  y="170" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="9">problem</text>
+    <text x="220" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">OAuth 1.0</text>
+    <text x="220" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">draft</text>
+    <text x="360" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">OAuth 1.0a</text>
+    <text x="360" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">RFC 5849</text>
+    <text x="500" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">OAuth 2.0</text>
+    <text x="500" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">RFC 6749</text>
+    <text x="640" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">OpenID</text>
+    <text x="640" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">Connect 1.0</text>
+    <text x="780" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">2.1 draft +</text>
+    <text x="780" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">Sec BCP 240</text>
+    <text x="900" y="140" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">DPoP, RAR,</text>
+    <text x="900" y="155" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">MCP profile</text>
+    <text x="490" y="205" text-anchor="middle" fill="#7c968b" font-family="Hanken Grotesk,sans-serif" font-size="11">Eighteen years from "the password anti-pattern" to a sender-constrained, audience-bound, PKCE-mandatory OAuth 2.1.</text>
   </svg>
 
   <div class="cols cols-2" style="margin-top:0.3em;">
@@ -443,28 +444,28 @@ Authorization: OAuth
 
   <svg class="diagram" viewBox="0 0 920 200" width="860" height="200">
     <rect x="20"  y="60" width="180" height="80" rx="8" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
-    <text x="110" y="95" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="14" font-weight="700">Resource Owner</text>
-    <text x="110" y="115" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="10">(the user)</text>
+    <text x="110" y="95" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="14" font-weight="700">Resource Owner</text>
+    <text x="110" y="115" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="10">(the user)</text>
 
     <rect x="250" y="60" width="180" height="80" rx="8" fill="#19342a" stroke="#cfad64" stroke-width="1.5"/>
-    <text x="340" y="95" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="14" font-weight="700">Client</text>
-    <text x="340" y="115" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="10">(the app)</text>
+    <text x="340" y="95" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="14" font-weight="700">Client</text>
+    <text x="340" y="115" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="10">(the app)</text>
 
     <rect x="480" y="60" width="180" height="80" rx="8" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
-    <text x="570" y="95" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="14" font-weight="700">Authorization</text>
-    <text x="570" y="112" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="14" font-weight="700">Server (AS)</text>
-    <text x="570" y="130" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">issues tokens</text>
+    <text x="570" y="95" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="14" font-weight="700">Authorization</text>
+    <text x="570" y="112" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="14" font-weight="700">Server (AS)</text>
+    <text x="570" y="130" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">issues tokens</text>
 
     <rect x="710" y="60" width="180" height="80" rx="8" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
-    <text x="800" y="95" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="14" font-weight="700">Resource</text>
-    <text x="800" y="112" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="14" font-weight="700">Server (RS)</text>
-    <text x="800" y="130" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">verifies tokens</text>
+    <text x="800" y="95" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="14" font-weight="700">Resource</text>
+    <text x="800" y="112" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="14" font-weight="700">Server (RS)</text>
+    <text x="800" y="130" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">verifies tokens</text>
 
     <line x1="200" y1="100" x2="250" y2="100" stroke="#7c968b" stroke-width="1.2"/>
     <line x1="430" y1="100" x2="480" y2="100" stroke="#7c968b" stroke-width="1.2"/>
     <line x1="660" y1="100" x2="710" y2="100" stroke="#7c968b" stroke-width="1.2"/>
 
-    <text x="455" y="180" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">AS &amp; RS may be the same product (Google) or completely separate services (your API + Auth0).</text>
+    <text x="455" y="180" text-anchor="middle" fill="#7c968b" font-family="Hanken Grotesk,sans-serif" font-size="11">AS &amp; RS may be the same product (Google) or completely separate services (your API + Auth0).</text>
   </svg>
 
   <div class="cols cols-2" style="margin-top:0.4em;">
@@ -560,13 +561,13 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiI...</code></pre>
   <svg class="diagram" viewBox="0 0 940 320" width="900" height="320">
     <!-- lanes -->
     <rect x="20"  y="20" width="140" height="40" rx="5" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
-    <text x="90"  y="45" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">User-Agent</text>
+    <text x="90"  y="45" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">User-Agent</text>
     <rect x="270" y="20" width="140" height="40" rx="5" fill="#19342a" stroke="#cfad64" stroke-width="1.5"/>
-    <text x="340" y="45" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
+    <text x="340" y="45" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">Client</text>
     <rect x="520" y="20" width="160" height="40" rx="5" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
-    <text x="600" y="45" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">Authorization Server</text>
+    <text x="600" y="45" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="13" font-weight="700">Authorization Server</text>
     <rect x="770" y="20" width="150" height="40" rx="5" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
-    <text x="845" y="45" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">Resource Server</text>
+    <text x="845" y="45" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="13" font-weight="700">Resource Server</text>
 
     <line x1="90"  y1="60" x2="90"  y2="310" stroke="#29483d" stroke-width="1" stroke-dasharray="3,3"/>
     <line x1="340" y1="60" x2="340" y2="310" stroke="#29483d" stroke-width="1" stroke-dasharray="3,3"/>
@@ -575,31 +576,31 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiI...</code></pre>
 
     <!-- 1: user → client -->
     <line x1="90"  y1="80"  x2="340" y2="80"  stroke="#93b6cd" stroke-width="1.2" marker-end="url(#884666bb)"/>
-    <text x="215" y="75" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="10">1. click "log in"</text>
+    <text x="215" y="75" text-anchor="middle" fill="#93b6cd" font-family="Spline Sans Mono,monospace" font-size="10">1. click "log in"</text>
     <!-- 2: client → user (redirect) -->
     <line x1="340" y1="105" x2="90"  y2="105" stroke="#cfad64" stroke-width="1.2" marker-end="url(#884666aa)"/>
-    <text x="215" y="100" text-anchor="middle" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="10">2. 302 → /authorize?...&amp;code_challenge=...</text>
+    <text x="215" y="100" text-anchor="middle" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="10">2. 302 → /authorize?...&amp;code_challenge=...</text>
     <!-- 3: user → AS -->
     <line x1="90"  y1="130" x2="600" y2="130" stroke="#93b6cd" stroke-width="1.2" marker-end="url(#884666bb)"/>
-    <text x="345" y="125" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="10">3. GET /authorize → user logs in &amp; consents</text>
+    <text x="345" y="125" text-anchor="middle" fill="#93b6cd" font-family="Spline Sans Mono,monospace" font-size="10">3. GET /authorize → user logs in &amp; consents</text>
     <!-- 4: AS → user (with code) -->
     <line x1="600" y1="155" x2="90"  y2="155" stroke="#b2a3d0" stroke-width="1.2" marker-end="url(#a08p)"/>
-    <text x="345" y="150" text-anchor="middle" fill="#b2a3d0" font-family="JetBrains Mono,monospace" font-size="10">4. 302 redirect_uri?code=AUTH_CODE&amp;state=...</text>
+    <text x="345" y="150" text-anchor="middle" fill="#b2a3d0" font-family="Spline Sans Mono,monospace" font-size="10">4. 302 redirect_uri?code=AUTH_CODE&amp;state=...</text>
     <!-- 5: user → client -->
     <line x1="90"  y1="180" x2="340" y2="180" stroke="#93b6cd" stroke-width="1.2" marker-end="url(#884666bb)"/>
-    <text x="215" y="175" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="10">5. browser delivers ?code=...</text>
+    <text x="215" y="175" text-anchor="middle" fill="#93b6cd" font-family="Spline Sans Mono,monospace" font-size="10">5. browser delivers ?code=...</text>
     <!-- 6: client → AS (back-channel) -->
     <line x1="340" y1="210" x2="600" y2="210" stroke="#cfad64" stroke-width="1.4" marker-end="url(#884666aa)"/>
-    <text x="470" y="205" text-anchor="middle" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="10">6. POST /token (code, code_verifier, client_id+secret)</text>
+    <text x="470" y="205" text-anchor="middle" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="10">6. POST /token (code, code_verifier, client_id+secret)</text>
     <!-- 7: AS → client -->
     <line x1="600" y1="235" x2="340" y2="235" stroke="#b2a3d0" stroke-width="1.4" marker-end="url(#a08p)"/>
-    <text x="470" y="230" text-anchor="middle" fill="#b2a3d0" font-family="JetBrains Mono,monospace" font-size="10">7. { access_token, refresh_token, id_token }</text>
+    <text x="470" y="230" text-anchor="middle" fill="#b2a3d0" font-family="Spline Sans Mono,monospace" font-size="10">7. { access_token, refresh_token, id_token }</text>
     <!-- 8: client → RS -->
     <line x1="340" y1="265" x2="845" y2="265" stroke="#cfad64" stroke-width="1.2" marker-end="url(#884666aa)"/>
-    <text x="592" y="260" text-anchor="middle" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="10">8. GET /api/me  Authorization: Bearer &lt;access_token&gt;</text>
+    <text x="592" y="260" text-anchor="middle" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="10">8. GET /api/me  Authorization: Bearer &lt;access_token&gt;</text>
     <!-- 9: RS → client -->
     <line x1="845" y1="290" x2="340" y2="290" stroke="#8fc9a1" stroke-width="1.2" marker-end="url(#a08g)"/>
-    <text x="592" y="285" text-anchor="middle" fill="#8fc9a1" font-family="JetBrains Mono,monospace" font-size="10">9. 200 { user data }</text>
+    <text x="592" y="285" text-anchor="middle" fill="#8fc9a1" font-family="Spline Sans Mono,monospace" font-size="10">9. 200 { user data }</text>
 
     <defs>
       <marker id="a08b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#93b6cd"/></marker>
@@ -788,23 +789,23 @@ audience=https://api.billing.internal
 
   <svg class="diagram" viewBox="0 0 920 220" width="860" height="220">
     <rect x="20"  y="20" width="160" height="40" rx="5" fill="#19342a" stroke="#cfad64" stroke-width="1.5"/>
-    <text x="100" y="45" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">Device (CLI/TV)</text>
+    <text x="100" y="45" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">Device (CLI/TV)</text>
     <rect x="380" y="20" width="160" height="40" rx="5" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
-    <text x="460" y="45" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">Auth Server</text>
+    <text x="460" y="45" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="13" font-weight="700">Auth Server</text>
     <rect x="740" y="20" width="160" height="40" rx="5" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
-    <text x="820" y="45" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">User on Phone</text>
+    <text x="820" y="45" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">User on Phone</text>
 
     <line x1="180" y1="80"  x2="380" y2="80"  stroke="#cfad64" stroke-width="1.2" marker-end="url(#8c2e23aa)"/>
-    <text x="280" y="75" text-anchor="middle" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="10">1. POST /device_authorization</text>
+    <text x="280" y="75" text-anchor="middle" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="10">1. POST /device_authorization</text>
     <line x1="380" y1="105" x2="180" y2="105" stroke="#b2a3d0" stroke-width="1.2" marker-end="url(#a13p)"/>
-    <text x="280" y="100" text-anchor="middle" fill="#b2a3d0" font-family="JetBrains Mono,monospace" font-size="10">2. { device_code, user_code, verification_uri }</text>
+    <text x="280" y="100" text-anchor="middle" fill="#b2a3d0" font-family="Spline Sans Mono,monospace" font-size="10">2. { device_code, user_code, verification_uri }</text>
     <line x1="100" y1="125" x2="100" y2="180" stroke="#7c968b" stroke-width="1.2" stroke-dasharray="3,3"/>
-    <text x="105" y="155" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="10">show "ABCD-1234"</text>
+    <text x="105" y="155" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="10">show "ABCD-1234"</text>
     <line x1="180" y1="160" x2="740" y2="160" stroke="#93b6cd" stroke-width="1.2" marker-end="url(#8c2e23bb)"/>
-    <text x="460" y="155" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="10">3. user types code at verification_uri, signs in &amp; consents</text>
+    <text x="460" y="155" text-anchor="middle" fill="#93b6cd" font-family="Spline Sans Mono,monospace" font-size="10">3. user types code at verification_uri, signs in &amp; consents</text>
     <line x1="180" y1="195" x2="380" y2="195" stroke="#cfad64" stroke-width="1.2" marker-end="url(#8c2e23aa)"/>
-    <text x="280" y="190" text-anchor="middle" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="10">4. POST /token (poll)</text>
-    <text x="280" y="210" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="9">→ authorization_pending → eventually access_token</text>
+    <text x="280" y="190" text-anchor="middle" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="10">4. POST /token (poll)</text>
+    <text x="280" y="210" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="9">→ authorization_pending → eventually access_token</text>
 
     <defs>
       <marker id="a13a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#cfad64"/></marker>
